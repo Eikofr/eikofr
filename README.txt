@@ -1,45 +1,56 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Votre titre</title>
-    <script>
-        let Python_local_API;
-
-        // Charger le fichier JSON
-        async function loadJSON() {
-            try {
-                const response = await fetch('url.json');
-                if (!response.ok) {
-                    throw new Error('Erreur lors du chargement du fichier JSON');
-                }
-                const data = await response.json();
-
-                // Récupérer la valeur associée à la clé "host"
-                Python_local_API = data.host;
-
-                // Utiliser la valeur stockée dans la variable Python_local_API
-                console.log('Valeur de Python_local_API:', Python_local_API);
-
-                // Appeler une autre fonction qui utilise la variable Python_local_API
-                useAPI();
-            } catch (error) {
-                console.error('Erreur:', error);
-            }
+    <title>CSV File Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
         }
 
-        // Une fonction qui utilise la variable Python_local_API
-        function useAPI() {
-            console.log('Utiliser Python_local_API dans une autre fonction:', Python_local_API);
-            // Votre code utilisant la variable Python_local_API
+        form {
+            max-width: 400px;
+            margin: 20px auto;
         }
 
-        // Exécuter la fonction loadJSON lorsque le contenu de la page est chargé
-        document.addEventListener('DOMContentLoaded', loadJSON);
-    </script>
+        input[type="submit"] {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <!-- Votre contenu HTML -->
+    <h1>CSV File Upload</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <label for="csv-file">Select a CSV file:</label>
+        <input type="file" id="csv-file" name="csv-file" accept=".csv" required>
+        <br>
+        <input type="submit" value="Upload CSV">
+    </form>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const fileInput = document.getElementById('csv-file');
+            const formData = new FormData();
+            formData.append('csv-file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    alert('CSV file uploaded successfully.');
+                } else {
+                    alert('Error uploading CSV file.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error uploading CSV file.');
+            }
+        });
+    </script>
 </body>
 </html>
