@@ -18,6 +18,7 @@
         .card {
             max-width: 400px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
         .card-footer {
@@ -35,7 +36,7 @@
                     <label for="csv-file" class="form-label">Select a CSV file:</label>
                     <input class="form-control" type="file" id="csv-file" name="csv-file" accept=".csv" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Upload CSV</button>
+                <button type="submit" class="btn btn-success">Upload CSV</button>
             </form>
         </div>
         <div class="card-footer">Made with ❤️ by YourName</div>
@@ -67,4 +68,5 @@
             }
         });
     </script>
-</
+</body>
+</html>
