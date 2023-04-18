@@ -1,22 +1,27 @@
-SELECT *
-FROM (
-  SELECT table_name, column_name
-  FROM information_schema.columns
-  WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
-) AS cols
-WHERE EXISTS (
-  SELECT *
-  FROM pg_tables
-  WHERE tablename = cols.table_name
-  AND EXISTS (
-    SELECT *
-    FROM pg_attribute
-    WHERE attrelid = CONCAT(cols.table_name, '::regclass')::oid
-    AND attname = cols.column_name
-    AND EXISTS (
-      SELECT *
-      FROM "public"."%I" AS t
-      WHERE t.%I = %L
-    )
-  )
-)
+DO $$ 
+DECLARE 
+  tbl text;
+  col text;
+  query text := '';
+BEGIN 
+  FOR tbl IN 
+    SELECT table_name 
+    FROM information_schema.tables 
+    WHERE table_schema = 'public' -- Remplacez "public" par le nom de votre schéma 
+    AND table_name = 'ma_table' -- Remplacez "ma_table" par le nom de votre table
+  LOOP 
+    FOR col IN 
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = tbl 
+      AND table_schema = 'public' -- Remplacez "public" par le nom de votre schéma 
+    LOOP 
+      IF query <> '' THEN 
+        query := query || ' OR '; 
+      END IF; 
+      query := query || format('LOWER(%I) LIKE ''%%developpement%%''', col); 
+    END LOOP; 
+    EXECUTE format('SELECT * FROM %I WHERE %s', tbl, query) 
+    USING OUTPUT; 
+  END LOOP; 
+END $$;
