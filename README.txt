@@ -1,24 +1,16 @@
-# Vérification de la colonne à utiliser pour la fusion
+import requests
 
-if 'col' not in finma.columns or 'col' not in six_filtered.columns:
-
-    raise ValueError("Les colonnes nécessaires pour la fusion n'existent pas dans les deux DataFrames.")
-
-# Vérification que les données à fusionner sont identiques dans les deux fichiers
-
-if not (finma['col'].unique() == six_filtered['col'].unique()).all():
-
-    raise ValueError("Les colonnes utilisées pour la fusion contiennent des données différentes dans les deux fichiers.")
-
-# Vérification des doublons dans les colonnes utilisées pour la fusion
-
-if finma['col'].duplicated().any() or six_filtered['col'].duplicated().any():
-
-    raise ValueError("Les colonnes utilisées pour la fusion contiennent des doublons dans l'un des fichiers.")
-
-# Vérification des valeurs manquantes dans les colonnes utilisées pour la fusion
-
-if finma['col'].isnull().any() or six_filtered['col'].isnull().any():
-
-    raise ValueError("Les colonnes utilisées pour la fusion contiennent des valeurs manquantes dans l'un des fichiers.")
+def call_api(url, api_key):
+    headers = {'API-Key': api_key}
+    response = requests.get(url, headers=headers)
     
+    if response.status_code == 200:
+        print(response.json())  # Affiche la réponse au format JSON
+    else:
+        print('Erreur lors de la requête :', response.status_code)
+
+# Exemple d'utilisation
+api_url = 'https://exemple-api.com/endpoint'
+api_key = 'votre_clé_api'
+
+call_api(api_url, api_key)
